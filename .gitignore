@@ -1,2 +1,32 @@
 fuel/app/logs/*/*/*
 fuel/app/cache/*/*
+<?php
+
+include_once ‘facebook/client/facebook.php’;
+$facebook = new Facebook(array(
+‘appId’  => ‘524007157610719’,
+‘secret’ => ‘c7880d617a2e939ebee4423f6e8e5f6d’,
+‘cookie’ => true,
+‘domain’ => ‘achi.idv.tw’
+));
+$session = $facebook->getSession();
+if (!$session) {
+$url = $facebook->getLoginUrl(array(
+‘canvas’ => 1,
+‘fbconnect’ => 0
+));
+echo “<script type=’text/javascript’>top.location.href = ‘$url’;</script>”;
+} else {
+try {
+$uid = $facebook->getUser();
+$me = $facebook->api(‘/me’);
+$updated = date(“l, F j, Y”, strtotime($me['updated_time']));
+echo “Hello ” . $me['name'] . “<br />”;
+echo “你最近更新個人檔案的時間是” . $updated;
+} catch (FacebookApiException $e) {
+echo “Error:” . print_r($e, true);
+}
+}
+
+
+?>
